@@ -37,7 +37,9 @@
         Console.WriteLine("4. View Flight Details");
         Console.WriteLine("5. Search Bookings by Destination");
         Console.WriteLine("6. add flight");
-        Console.WriteLine("7. Exit");
+        Console.WriteLine("7. Update Flight Departure");
+
+        Console.WriteLine("8. Exit");
         Console.Write("Select an option (1-7): ");
         int input = int.Parse(Console.ReadLine());
         Console.Clear();
@@ -101,16 +103,46 @@
 
     static void UpdateFlightDeparture(ref DateTime departure)
     {
+        Console.WriteLine("Enter flight code to update: ");
+        string flightCode = Console.ReadLine();
+        for (int i = 0; i < flightCount; i++)
+        {
+            if (flightCodes[i] == flightCode)
+            {
+                departureTimes[i] = departure;
+                Console.WriteLine("Flight departure updated successfully.");
+                return;
+            }
+        }
+
+
     }
 
-    static void CancelFlightBooking(out string passengerName)
+    public static void CancelFlightBooking(out string canceld)
     {
-        passengerName = "";
+        Console.Write("Enter passenger name to cancel booking: ");
+        canceld = Console.ReadLine(); // Assign a value to the out parameter
+
+        for (int i = 0; i < bookingCount; i++)
+        {
+            if (passengerNames[i] == canceld)
+            {
+                bookingIDs[i] = null;
+                bookedFlightCodes[i] = null;
+                passengerNames[i] = null;
+                bookingCount--;
+                Console.WriteLine("Booking cancelled successfully.");
+                return;
+            }
+        }
+
+        Console.WriteLine("No booking found for the given passenger name.");
     }
 
     // Passenger Booking Functions (9–13)
     static void BookFlight(string passengerName, string flightCode = "Default001")
     {
+
     }
 
     static bool ValidateFlightCode(string flightCode)
@@ -167,7 +199,12 @@
                     string name = Console.ReadLine();
                     Console.Write("Enter flight code (optional): ");
                     string code = Console.ReadLine();
-                    BookFlight(name, string.IsNullOrEmpty(code) ? "Default001" : code);
+                    if (code == null)
+                    {
+                        code = "Default001"; // Default flight code
+                    }
+
+
                     break;
 
                 case 2:
@@ -210,6 +247,13 @@
                     AddFlight(flightCode, fromCity, toCity, departureTime, duration);
                     break;
                 case 7:
+                    Console.Write("Enter flight code to update: ");
+                    string updateCode = Console.ReadLine();
+                    Console.Write("Enter new departure time (yyyy-mm-dd hh:mm): ");
+                    DateTime newDepartureTime = DateTime.Parse(Console.ReadLine());
+                    UpdateFlightDeparture(ref newDepartureTime);
+                    break;
+                case 8:
                     ExitApplication();
                     return;
 
