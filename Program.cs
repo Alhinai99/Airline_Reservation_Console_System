@@ -36,8 +36,9 @@
         Console.WriteLine("3. View All Flights");
         Console.WriteLine("4. View Flight Details");
         Console.WriteLine("5. Search Bookings by Destination");
-        Console.WriteLine("6. Exit");
-        Console.Write("Select an option (1-6): ");
+        Console.WriteLine("6. add flight");
+        Console.WriteLine("7. Exit");
+        Console.Write("Select an option (1-7): ");
         int input = int.Parse(Console.ReadLine());
         Console.Clear();
 
@@ -46,19 +47,55 @@
 
     static void ExitApplication()
     {
+        Console.WriteLine("Thank you for using the Airline Reservation System. Goodbye!");
+        return;
     }
 
     static void AddFlight(string flightCode, string fromCity, string toCity, DateTime departureTime, int duration)
     {
+        if (flightCount < MaxFlights)
+        {
+            flightCodes[flightCount] = flightCode;
+            fromCities[flightCount] = fromCity;
+            toCities[flightCount] = toCity;
+            departureTimes[flightCount] = departureTime;
+            durations[flightCount] = duration;
+            flightCount++;
+        }
+        else
+        {
+            Console.WriteLine("Flight limit reached. Cannot add more flights.");
+        }
     }
 
     // Flight and Passenger Management (5–8)
     static void DisplayAllFlights()
     {
+
+        for (int i = 0; i < flightCount; i++)
+        {
+            Console.WriteLine("flight code : " + flightCodes[i]);
+            Console.WriteLine("From: " + fromCities[i]);
+            Console.WriteLine("To: " + toCities[i]);
+            Console.WriteLine("Departure: " + departureTimes[i]);
+            Console.WriteLine("Duration: " + durations[i] + " hours");
+        }
     }
 
     static bool FindFlightByCode(string code)
     {
+        for (int i = 0; i < flightCount; i++)
+        {
+            if (flightCodes[i]== code)
+            {
+                Console.WriteLine("Flight found: " + flightCodes[i]);
+                Console.WriteLine("From: " + fromCities[i]);
+                Console.WriteLine("To: " + toCities[i]);
+                Console.WriteLine("Departure: " + departureTimes[i]);
+                Console.WriteLine("Duration: " + durations[i] + " hours");
+                return true;
+            }
+        }
         return false;
     }
 
@@ -157,9 +194,24 @@
                     SearchBookingsByDestination(city);
                     break;
 
+
                 case 6:
-                    ExitApplication();
+                    Console.WriteLine("Adding a new flight...");
+                    Console.Write("Flight Code: ");
+                    string flightCode = Console.ReadLine();
+                    Console.Write("From City: ");
+                    string fromCity = Console.ReadLine();
+                    Console.Write("To City: ");
+                    string toCity = Console.ReadLine();
+                    Console.Write("Departure Time (yyyy-mm-dd hh:mm): ");
+                    DateTime departureTime = DateTime.Parse(Console.ReadLine());
+                    Console.Write("Duration (in hourse): ");
+                    int duration = int.Parse(Console.ReadLine());
+                    AddFlight(flightCode, fromCity, toCity, departureTime, duration);
                     break;
+                case 7:
+                    ExitApplication();
+                    return;
 
                 default:
                     Console.WriteLine("Invalid option. Try again.");
