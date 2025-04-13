@@ -10,12 +10,15 @@
     static string[] toCities = new string[MaxFlights];
     static DateTime[] departureTimes = new DateTime[MaxFlights];
     static int[] durations = new int[MaxFlights];
+    static int[] fare = new int[MaxFlights];
     static int flightCount = 0;
+
 
     // Booking data
     static string[] bookingIDs = new string[MaxBookings];
     static string[] passengerNames = new string[MaxBookings];
     static string[] bookedFlightCodes = new string[MaxBookings];
+
     static int bookingCount = 0;
 
 
@@ -34,7 +37,7 @@
         Console.WriteLine("1. Book a Flight");
         Console.WriteLine("2. Cancel a Booking");
         Console.WriteLine("3. View All Flights");
-        Console.WriteLine("4. View Flight Details");
+        Console.WriteLine("4. View Flight Details (by flight code)");
         Console.WriteLine("5. Search Bookings by Destination");
         Console.WriteLine("6. add flight");
         Console.WriteLine("7. Update Flight Departure");
@@ -142,46 +145,133 @@
     // Passenger Booking Functions (9–13)
     static void BookFlight(string passengerName, string flightCode = "Default001")
     {
+        if (bookingCount < MaxBookings)
+        {
+            bookingIDs[bookingCount] = GenerateBookingID(passengerName);
+            passengerNames[bookingCount] = passengerName;
+            bookedFlightCodes[bookingCount] = flightCode;
+            bookingCount++;
+        }
+        else
+        {
+            Console.WriteLine("Booking limit reached. Cannot book more flights.");
+        }
+
 
     }
 
     static bool ValidateFlightCode(string flightCode)
     {
+        for (int i = 0; i < flightCount; i++)
+        {
+            if (flightCodes[i] == flightCode)
+            {
+                return true;
+            }
+        }
         return false;
     }
 
     static string GenerateBookingID(string passengerName)
     {
-        return "";
+
+        string bookingID = "BID" + (bookingCount + 1).ToString("D4");
+        return bookingID;
+
     }
 
     static void DisplayFlightDetails(string code)
     {
+        for(int i =0; i< flightCount; i++)
+        {
+            if(code == flightCodes[i])
+            {
+                Console.WriteLine("Flight Code: " + flightCodes[i]);
+                Console.WriteLine("From: " + fromCities[i]);
+                Console.WriteLine("To: " + toCities[i]);
+                Console.WriteLine("Departure: " + departureTimes[i]);
+                Console.WriteLine("Duration: " + durations[i] + " hours");
+                Console.WriteLine("Fare: " + fare[i]);
+                Console.WriteLine("Booking Details: ");
+                Console.WriteLine("Booking ID: " + bookingIDs[i]);
+                Console.WriteLine("Passenger Name: " + passengerNames[i]);
+                Console.WriteLine("price: " + fare[i]);
+
+
+
+            }
+        }
+        
     }
 
     static void SearchBookingsByDestination(string toCity)
     {
+        for (int i = 0; i < flightCount; i++)
+        {
+            if (toCities[i] == toCity)
+            {
+                Console.WriteLine("Flight found: " + flightCodes[i]);
+                Console.WriteLine("From: " + fromCities[i]);
+                Console.WriteLine("To: " + toCities[i]);
+                Console.WriteLine("Departure: " + departureTimes[i]);
+                Console.WriteLine("Duration: " + durations[i] + " hours");
+            }
+        }
     }
 
     // Function Overloading (14 – 16)
     static int CalculateFare(int basePrice, int numTickets)
     {
-        return 0;
+        int price = 0;
+        for (int i = 0; i < numTickets; i++)
+        {
+            price += basePrice;
+        }
+        return price;
     }
 
     static double CalculateFare(double basePrice, int numTickets)
     {
-        return 0.0;
+        double price = 0;
+        for (int i = 0; i < numTickets; i++)
+        {
+            price += basePrice;
+        }
+        return price;
     }
 
     static int CalculateFare(int basePrice, int numTickets, int discount)
     {
-        return 0;
+        int price = 0;
+        basePrice *= discount / 100;
+        for (int i = 0; i < numTickets; i++)
+        {
+            
+            price += basePrice ;
+        }
+
+        return price;
     }
 
     // System Utilities & Final Flow (17 – 18)
     static bool ConfirmAction(string action)
+
     {
+        Console.Write($"Are you sure you want to {action}? (y/n): ");
+        string input = Console.ReadLine();
+        if (input.ToLower() == "y")
+        {
+            return true;
+        }
+        else if (input.ToLower() == "n")
+        {
+            return false;
+        }
+        else
+        {
+            Console.WriteLine("Invalid input. Please enter 'y' or 'n'.");
+        }
+
         return false;
     }
 
@@ -203,6 +293,27 @@
                     {
                         code = "Default001"; // Default flight code
                     }
+                    if (ValidateFlightCode(code)) 
+                    {
+                        string bookingID = GenerateBookingID(name);
+                        BookFlight(name, code);
+                        Console.WriteLine($"Booking successful! Booking ID: {bookingID}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid flight code.");
+                    }
+                    Console.WriteLine("Enter number of ticket :");
+                    int numTickets = int.Parse(Console.ReadLine());
+                    Console.WriteLine("Enter fare :");
+                    int fare = int.Parse(Console.ReadLine());
+                    Console.WriteLine("Enter discount :");
+                    int discount = int.Parse(Console.ReadLine());
+
+                    CalculateFare(fare, numTickets, discount);
+
+
+
 
 
                     break;
@@ -245,6 +356,7 @@
                     Console.Write("Duration (in hourse): ");
                     int duration = int.Parse(Console.ReadLine());
                     AddFlight(flightCode, fromCity, toCity, departureTime, duration);
+
                     break;
                 case 7:
                     Console.Write("Enter flight code to update: ");
