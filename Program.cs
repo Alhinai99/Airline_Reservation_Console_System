@@ -124,24 +124,22 @@
     //================= Booking Cancellation ===========
     public static void CancelFlightBooking(out string canceld)
     {
-        canceld = null; 
+        canceld = null;
+        Console.Write("Enter passenger name to cancel booking: ");
+        canceld = Console.ReadLine();
         bool found = false;
 
         for (int i = 0; i < bookingCount; i++)
         {
-            if (passengerNames[i] == canceld) 
+            if (passengerNames[i] == canceld)
             {
-                
                 if (ConfirmAction($"cancel booking for {passengerNames[i]}"))
                 {
-                    
-                    for (int j = i; j < bookingCount - 1; j++)
-                    {
-                        bookingIDs[j] = bookingIDs[j + 1];
-                        passengerNames[j] = passengerNames[j + 1];
-                        bookedFlightCodes[j] = bookedFlightCodes[j + 1];
-                    }
-                    bookingCount--;
+                   
+                    bookingIDs[i] = null;
+                    passengerNames[i] = null;
+                    bookedFlightCodes[i] = null;
+
                     found = true;
                     Console.WriteLine("Booking cancelled successfully.");
                 }
@@ -264,22 +262,16 @@
     static bool ConfirmAction(string action)
 
     {
-        Console.Write($"Are you sure you want to {action}? (y/n): ");
-        string input = Console.ReadLine();
-        if (input.ToLower() == "y")
         {
-            return true;
+            Console.Write($"Are you sure you want to {action}? (y/n): ");
+            string input = Console.ReadLine().ToLower();
+            while (input != "y" && input != "n")
+            {
+                Console.WriteLine("Invalid input. Please enter 'y' or 'n'.");
+                input = Console.ReadLine().ToLower();
+            }
+            return input == "y";
         }
-        else if (input.ToLower() == "n")
-        {
-            return false;
-        }
-        else
-        {
-            Console.WriteLine("Invalid input. Please enter 'y' or 'n'.");
-        }
-
-        return false;
     }
     //================= Main System Loop =================
     static void StartSystem()
